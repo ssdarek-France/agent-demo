@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat IA – Démo</title>
+  <meta name="description" content="Agent conversationnel de démonstration : apportez votre fournisseur LLM et votre clé API.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- ============ Panneau de configuration ============ -->
+    <aside class="settings" id="settings">
+      <div class="settings-head">
+        <h1>💬 Chat IA</h1>
+        <button class="icon-btn only-mobile" id="closeSettings" type="button" aria-label="Fermer les réglages">✕</button>
+      </div>
+
+      <form id="settingsForm" autocomplete="off">
+        <label for="provider">Fournisseur LLM</label>
+        <select id="provider"></select>
+
+        <div id="baseUrlRow" hidden>
+          <label for="baseUrl">URL de base (compatible OpenAI)</label>
+          <input id="baseUrl" type="url" placeholder="http://localhost:11434/v1">
+        </div>
+
+        <label for="apiKey">Clé API</label>
+        <div class="key-row">
+          <input id="apiKey" type="password" placeholder="Collez votre clé ici" spellcheck="false">
+          <button class="icon-btn" id="toggleKey" type="button" aria-label="Afficher la clé">👁</button>
+        </div>
+        <p class="hint" id="keyHint"></p>
+
+        <label class="check">
+          <input type="checkbox" id="rememberKey">
+          Mémoriser la clé sur cet appareil
+        </label>
+        <p class="hint">Par défaut, la clé est oubliée à la fermeture de l'onglet. Ne cochez pas sur un ordinateur partagé.</p>
+
+        <label for="model">Modèle</label>
+        <div class="key-row">
+          <input id="model" list="modelList" placeholder="Nom du modèle" spellcheck="false">
+          <button class="icon-btn" id="loadModels" type="button" title="Charger la liste des modèles" aria-label="Charger la liste des modèles">↻</button>
+        </div>
+        <datalist id="modelList"></datalist>
+        <p class="hint" id="modelHint">Cliquez sur ↻ pour récupérer les modèles disponibles avec votre clé.</p>
+
+        <details>
+          <summary>Réglages avancés</summary>
+          <label for="systemPrompt">Instructions système</label>
+          <textarea id="systemPrompt" rows="4">Tu es un assistant pédagogique, clair et concis. Tu réponds en français.</textarea>
+
+          <label for="temperature">Température : <output id="tempValue">0.7</output></label>
+          <input id="temperature" type="range" min="0" max="1.5" step="0.1" value="0.7">
+          <p class="hint">Basse = réponses stables et factuelles. Haute = réponses plus créatives.</p>
+        </details>
+
+        <div class="settings-actions">
+          <button type="button" id="testConn" class="secondary">Tester la connexion</button>
+          <button type="button" id="forgetKey" class="danger">Effacer ma clé</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </form>
+
+      <footer class="settings-foot">
+        <p>🔒 Votre clé ne quitte votre navigateur que pour être envoyée directement au fournisseur choisi. Elle n'est stockée sur aucun serveur de cette application.</p>
+      </footer>
+    </aside>
+
+    <!-- ============ Zone de conversation ============ -->
+    <main class="chat">
+      <header class="chat-head">
+        <button class="icon-btn only-mobile" id="openSettings" type="button" aria-label="Ouvrir les réglages">☰</button>
+        <div class="chat-title">
+          <strong id="chatProvider">Aucun fournisseur</strong>
+          <span id="chatModel" class="muted"></span>
+        </div>
+        <button type="button" id="newChat" class="secondary small">Nouvelle conversation</button>
+      </header>
+
+      <section class="messages" id="messages" aria-live="polite">
+        <div class="empty" id="emptyState">
+          <h2>Bienvenue 👋</h2>
+          <p>1. Choisissez votre fournisseur (Groq, OpenAI, Mistral…)<br>
+             2. Collez votre clé API<br>
+             3. Choisissez un modèle, puis posez votre question.</p>
+        </div>
+      </section>
+
+      <form class="composer" id="composer">
+        <textarea id="input" rows="1" placeholder="Écrivez votre message…" title="Entrée pour envoyer, Maj+Entrée pour aller à la ligne"></textarea>
+        <button type="submit" id="sendBtn">Envoyer</button>
+        <button type="button" id="stopBtn" class="danger" hidden>Stop</button>
+      </form>
+    </main>
+  </div>
+
+  <script src="providers.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
